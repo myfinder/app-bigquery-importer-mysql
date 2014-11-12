@@ -1,0 +1,6 @@
+name = "WebService-BigQuery-Impoter-MySQL"
+# badges = ["travis"]
+authority="cpan:MYFINDER"
+
+module_maker="ModuleBuildTiny"
+
