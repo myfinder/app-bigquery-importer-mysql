@@ -14,13 +14,12 @@ __END__
 
 =head1 NAME
 
-App::BigQuery::Impoter::MySQL
+App::BigQuery::Impoter::MySQL - BigQuery data importer from MySQL tables.
 
 =head1 SYNOPSIS
 
     $ cpanm App::BigQuery::Impoter::MySQL
     $ mysqlbq -m ~/.my.cnf -b ~/.bigqueryrc --src SCHEMA_NAME.TABLE_NAME --dest DATASET_NAME.TABLE_NAME
-
 
 =head1 DESCRIPTION
 
@@ -38,4 +37,3 @@ it under the same terms as Perl itself.
 Tatsuro Hisamori E<lt>myfinder@cpan.orgE<gt>
 
 =cut
-

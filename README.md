@@ -1,6 +1,6 @@
 # NAME
 
-App::BigQuery::Impoter::MySQL
+App::BigQuery::Impoter::MySQL - BigQuery data importer from MySQL tables.
 
 # SYNOPSIS
 

@@ -1,7 +1,7 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "BigQuery data importer from MySQL tables.",
    "author" : [
-      "Tatsuro Hisamori <medianetworks@gmail.com>"
+      "Tatsuro Hisamori <myfinder@cpan.org>"
    ],
    "dynamic_config" : 0,
    "generated_by" : "Minilla/v2.2.0, CPAN::Meta::Converter version 2.142690",
@@ -52,6 +52,20 @@
       }
    },
    "release_status" : "unstable",
-   "version" : "0.01",
-   "x_authority" : "cpan:MYFINDER"
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/myfinder/app-bigquery-impoter-mysql/issues"
+      },
+      "homepage" : "https://github.com/myfinder/app-bigquery-impoter-mysql",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/myfinder/app-bigquery-impoter-mysql.git",
+         "web" : "https://github.com/myfinder/app-bigquery-impoter-mysql"
+      }
+   },
+   "version" : "0.01_1",
+   "x_authority" : "cpan:MYFINDER",
+   "x_contributors" : [
+      "Tatsuro Hisamori <medianetworks@gmail.com>"
+   ]
 }
