@@ -12,7 +12,7 @@
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
       "version" : "2"
    },
-   "name" : "WebService-BigQuery-Impoter-MySQL",
+   "name" : "App-BigQuery-Impoter-MySQL",
    "no_index" : {
       "directory" : [
          "t",
