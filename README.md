@@ -1,14 +1,15 @@
 # NAME
 
-WebService::BigQuery::Impoter::MySQL - It's new $module
+WebService::BigQuery::Impoter::MySQL
 
 # SYNOPSIS
 
-    use WebService::BigQuery::Impoter::MySQL;
+    $ cpanm WebService::BigQuery::Impoter::MySQL
+    $ mysqlbq -m ~/.my.cnf -b ~/.bigqueryrc --src SCHEMA_NAME.TABLE_NAME --dest DATASET_NAME.TABLE_NAME
 
 # DESCRIPTION
 
-WebService::BigQuery::Impoter::MySQL is ...
+WebService::BigQuery::Impoter::MySQL is BigQuery data importer from MySQL tables.
 
 # LICENSE
 
@@ -19,4 +20,4 @@ it under the same terms as Perl itself.
 
 # AUTHOR
 
-Tatsuro Hisamori <medianetworks@gmail.com>
+Tatsuro Hisamori <myfinder@cpan.org>
