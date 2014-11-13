@@ -5,7 +5,9 @@ use warnings;
 use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
 use Config::CmdRC ( file => ['.my.cnf', '.bigqueryrc'], );
 use DBI;
-use Data::Dumper;
+use File::Temp qw(tempfile tempdir);
+use Time::Piece;
+use File::Basename;
 
 use Class::Accessor::Lite (
     new => 1,
@@ -101,21 +103,90 @@ sub run {
 sub main {
     my $self = shift;
 
-    print Dumper $self;
-    my $db_host = $self->opt->{db_host};
-    my $src     = $self->opt->{src};
+    my $db_host                  = $self->opt->{db_host};
+    my $src                      = $self->opt->{src};
     my ($src_schema, $src_table) = split /\./, $src;
-    my $dst     = $self->opt->{dst};
-    my $project = $self->project_id;
+    my $dst                      = $self->opt->{dst};
+    my ($dst_schema, $dst_table) = split /\./, $dst;
+    my $project                  = $self->project_id;
 
     # check the table does not have BLOB or TEXT
-    my $check_sql = "SELECT SUM(IF((DATA_TYPE LIKE '%blob%' OR DATA_TYPE LIKE '%text%'),1, 0)) AS cnt
+    my $dbh = DBI->connect("dbi:mysql:${src_schema}:${db_host}", $self->mysqluser, $self->mysqlpassword);
+    my $blob_text_check_sql = "SELECT SUM(IF((DATA_TYPE LIKE '%blob%' OR DATA_TYPE LIKE '%text%'),1, 0)) AS cnt
         FROM INFORMATION_SCHEMA.columns
-        WHERE TABLE_SCHEMA = '$src_schema' AND TABLE_NAME = '$src_table'";
+        WHERE TABLE_SCHEMA = '${src_schema}' AND TABLE_NAME = '${src_table}'";
+    my $cnt = $dbh->selectrow_hashref($blob_text_check_sql);
+    if ($cnt->{cnt} > 0) {
+        warn "${src_schema}.${src_table} has BLOB or TEXT table"; exit 1;
+    }
 
-        #my $dbh = DBI->connect("dbi:mysql:${src_schema}:${db_host}", $self->mysqluser, $self->mysqlpassword);
-        #my $rs  = $dbh->selectall_arrayref($sql);
-        #print Dumper $rs;
+    # create BigQuery schema json structure
+    my $schema_type_check_sql = "SELECT
+        CONCAT('{\"name\": \"', COLUMN_NAME, '\",\"type\":\"', IF(DATA_TYPE LIKE \"%int%\", \"INTEGER\",IF(DATA_TYPE = \"decimal\",\"FLOAT\",\"STRING\")) , '\"}') AS json
+        FROM INFORMATION_SCHEMA.columns where TABLE_SCHEMA = '${src_schema}' AND TABLE_NAME = '${src_table}'";
+    my $rows = $dbh->selectall_arrayref($schema_type_check_sql);
+    my @schemas;
+    for my $row (@$rows) {
+        push @schemas, @$row[0];
+    }
+    my $bq_schema_json = '[' . join(',', @schemas) . ']';
+    my($bq_schema_json_fh, $bq_schema_json_filename) = tempfile;
+    print {$bq_schema_json_fh} $bq_schema_json;
+
+    # create temporary bucket
+    my $bucket_name = $src_table . '_' . localtime->epoch;
+    my $mb_command = "$self->{'progs'}->{'gsutil'} mb -p $self->{'project_id'} gs://$bucket_name";
+    my $result_create_bucket = system($mb_command);
+    if ($result_create_bucket != 0) {
+        warn "${mb_command} : failed"; exit 1;
+    }
+
+    # dump table data
+    my($src_dump_fh, $src_dump_filename) = tempfile;
+    my $dump_command = "$self->{'progs'}->{'mysql'} -u$self->{'mysqluser'} -p'$self->{'mysqlpassword'}' -h$self->{'opt'}->{'db_host'} ${src_schema} -Bse'SELECT * FROM ${src_table}'";
+    my $dump_result = `$dump_command`;
+    if ($? != 0) {
+        warn "${dump_command} : failed"; exit 1;
+    }
+    $dump_result =~ s/\"//g;
+    $dump_result =~ s/NULL//g;
+    print {$src_dump_fh} $dump_result;
+
+    # upload dump data
+    my $dump_upload_command = "$self->{'progs'}->{'gsutil'} cp $src_dump_filename gs://$bucket_name";
+    my $result_upload_schema = system($dump_upload_command);
+    if ($result_upload_schema != 0) {
+        warn "${dump_upload_command} : failed"; exit 1;
+    }
+
+    # copy to BigQuery
+    my $remove_table_command = "$self->{'progs'}->{'bq'} rm -f $dst";
+    my $result_remove_table = system($remove_table_command);
+    if ($result_remove_table != 0) {
+        warn "${remove_table_command} : failed"; exit 1;
+    }
+    my $src_dump_file_basename = basename($src_dump_filename);
+    my $load_dump_command = "$self->{'progs'}->{'bq'} load -F '\\t' --max_bad_record=300 $dst gs://${bucket_name}/${src_dump_file_basename} ${bq_schema_json_filename}";
+    my $result_load_dump = system($load_dump_command);
+    if ($result_load_dump != 0) {
+        warn "${load_dump_command} : failed"; exit 1;
+    }
+
+    # remove dump data
+    my $dump_rm_command = "$self->{'progs'}->{'gsutil'} rm gs://${bucket_name}/${src_dump_file_basename}";
+    my $result_dump_rm = system($dump_rm_command);
+    if ($result_dump_rm != 0) {
+        warn "${dump_rm_command} : failed"; exit 1;
+    }
+
+    # remove bucket
+    my $bucket_rm_command = "$self->{'progs'}->{'gsutil'} rb -f gs://$bucket_name";
+    my $result_bucket_rm = system($bucket_rm_command);
+    if ($result_bucket_rm != 0) {
+        warn "${dump_rm_command} : failed"; exit 1;
+    }
+
+    print "finish import job!!\n";
 }
 
 1;
