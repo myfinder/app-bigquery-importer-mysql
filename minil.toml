@@ -1,4 +1,4 @@
-name = "App-BigQuery-Impoter-MySQL"
+name = "App-BigQuery-Importer-MySQL"
 # badges = ["travis"]
 authority="cpan:MYFINDER"
 

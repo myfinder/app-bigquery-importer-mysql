@@ -12,7 +12,7 @@
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
       "version" : "2"
    },
-   "name" : "App-BigQuery-Impoter-MySQL",
+   "name" : "App-BigQuery-Importer-MySQL",
    "no_index" : {
       "directory" : [
          "t",
@@ -54,13 +54,13 @@
    "release_status" : "unstable",
    "resources" : {
       "bugtracker" : {
-         "web" : "https://github.com/myfinder/app-bigquery-impoter-mysql/issues"
+         "web" : "https://github.com/myfinder/app-bigquery-importer-mysql/issues"
       },
-      "homepage" : "https://github.com/myfinder/app-bigquery-impoter-mysql",
+      "homepage" : "https://github.com/myfinder/app-bigquery-importer-mysql",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/myfinder/app-bigquery-impoter-mysql.git",
-         "web" : "https://github.com/myfinder/app-bigquery-impoter-mysql"
+         "url" : "git://github.com/myfinder/app-bigquery-importer-mysql.git",
+         "web" : "https://github.com/myfinder/app-bigquery-importer-mysql"
       }
    },
    "version" : "0.01_1",

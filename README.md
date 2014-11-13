@@ -1,15 +1,15 @@
 # NAME
 
-App::BigQuery::Impoter::MySQL - BigQuery data importer from MySQL tables.
+App::BigQuery::Importer::MySQL - BigQuery data importer from MySQL tables.
 
 # SYNOPSIS
 
-    $ cpanm App::BigQuery::Impoter::MySQL
+    $ cpanm App::BigQuery::Importer::MySQL
     $ mysqlbq -m ~/.my.cnf -b ~/.bigqueryrc --src SCHEMA_NAME.TABLE_NAME --dest DATASET_NAME.TABLE_NAME
 
 # DESCRIPTION
 
-App::BigQuery::Impoter::MySQL is BigQuery data importer from MySQL tables.
+App::BigQuery::Importer::MySQL is BigQuery data importer from MySQL tables.
 
 # LICENSE
 
