@@ -11,10 +11,15 @@ App::BigQuery::Importer::MySQL - BigQuery data importer from MySQL tables.
 
 App::BigQuery::Importer::MySQL is BigQuery data importer from MySQL tables.
 
-# REQUIREMENTS
+# INSTALLATION
 
-    mysql client cli
-    gcloud cli
+- Rqeuired Commands
+ - mysql client cli
+ - gcloud cli
+
+- Required Files
+ - ~/.my.cnf
+ - ~/.bigqueryrc
 
 # LICENSE
 
