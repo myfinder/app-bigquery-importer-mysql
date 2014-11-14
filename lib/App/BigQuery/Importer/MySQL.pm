@@ -8,7 +8,7 @@ use File::Temp qw(tempfile tempdir);
 use File::Basename;
 use DBI;
 
-our $VERSION = "0.01_2";
+our $VERSION = "0.01_3";
 
 sub new {
     my $class = shift;

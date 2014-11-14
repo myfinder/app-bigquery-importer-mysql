@@ -2,6 +2,10 @@ Revision history for Perl extension App-BigQuery-Importer-MySQL
 
 {{$NEXT}}
 
+0.01_3 2014-11-14T07:33:41Z
+
+    - developer release
+
 0.01_2 2014-11-14T07:20:42Z
 
     - detached cli and refactoring
