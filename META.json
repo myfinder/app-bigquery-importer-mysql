@@ -42,7 +42,6 @@
       },
       "runtime" : {
          "requires" : {
-            "Class::Accessor::Lite" : "0",
             "Config::CmdRC" : "0",
             "DBD::mysql" : "0",
             "DBI" : "0",

@@ -4,8 +4,7 @@ App::BigQuery::Importer::MySQL - BigQuery data importer from MySQL tables.
 
 # SYNOPSIS
 
-    $ cpanm App::BigQuery::Importer::MySQL
-    $ mysqlbq --db_host localhost --src SCHEMA_NAME.TABLE_NAME --dst DATASET_NAME.TABLE_NAME
+    use App::BigQuery::Importer::MySQL
 
 # DESCRIPTION
 
