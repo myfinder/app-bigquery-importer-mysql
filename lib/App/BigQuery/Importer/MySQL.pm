@@ -75,7 +75,7 @@ mysqlbq - command description
     --db_host   MySQL Hostname or IP addr(ex: localhost)
     --src       MySQL Schema and Table name(ex: schema_name.table_name)
     --dst       BigQuery Dataset and Table name(ex: dataset_name.table_name)
-    --dryrun    dry run mode
+    --dryrun    dry run mode. not run the side-effects operation.(ex: gsutil mk/rm, bq load/rm)
     -h(--help)  show this help
   Requirement Programs: mysql cli and gcloud package
   Requirement Files: this script needs ~/.my.cnf and ~/.bigqueryrc files
@@ -131,18 +131,21 @@ sub main {
     }
     my $bq_schema_json = '[' . join(',', @schemas) . ']';
     my($bq_schema_json_fh, $bq_schema_json_filename) = tempfile;
-    print {$bq_schema_json_fh} $bq_schema_json;
+    unless ($self->dryrun) {
+        print {$bq_schema_json_fh} $bq_schema_json;
+    }
 
     # create temporary bucket
     my $bucket_name = $src_table . '_' . localtime->epoch;
-    my $mb_command = "$self->{'progs'}->{'gsutil'} mb -p $self->{'project_id'} gs://$bucket_name";
-    my $result_create_bucket = system($mb_command);
-    if ($result_create_bucket != 0) {
-        warn "${mb_command} : failed"; exit 1;
+    unless ($self->dryrun) {
+        my $mb_command = "$self->{'progs'}->{'gsutil'} mb -p $self->{'project_id'} gs://$bucket_name";
+        my $result_create_bucket = system($mb_command);
+        if ($result_create_bucket != 0) {
+            warn "${mb_command} : failed"; exit 1;
+        }
     }
 
     # dump table data
-    my($src_dump_fh, $src_dump_filename) = tempfile;
     my $dump_command = "$self->{'progs'}->{'mysql'} -u$self->{'mysqluser'} -p'$self->{'mysqlpassword'}' -h$self->{'opt'}->{'db_host'} ${src_schema} -Bse'SELECT * FROM ${src_table}'";
     my $dump_result = `$dump_command`;
     if ($? != 0) {
@@ -150,40 +153,55 @@ sub main {
     }
     $dump_result =~ s/\"//g;
     $dump_result =~ s/NULL//g;
-    print {$src_dump_fh} $dump_result;
+    my($src_dump_fh, $src_dump_filename) = tempfile;
+    unless ($self->dryrun) {
+        print {$src_dump_fh} $dump_result;
+    }
 
     # upload dump data
     my $dump_upload_command = "$self->{'progs'}->{'gsutil'} cp $src_dump_filename gs://$bucket_name";
-    my $result_upload_schema = system($dump_upload_command);
-    if ($result_upload_schema != 0) {
-        warn "${dump_upload_command} : failed"; exit 1;
+    warn $dump_upload_command if $self->dryrun;
+    unless ($self->dryrun) {
+        my $result_upload_schema = system($dump_upload_command);
+        if ($result_upload_schema != 0) {
+            warn "${dump_upload_command} : failed"; exit 1;
+        }
     }
 
     # copy to BigQuery
     my $remove_table_command = "$self->{'progs'}->{'bq'} rm -f $dst";
-    my $result_remove_table = system($remove_table_command);
-    if ($result_remove_table != 0) {
-        warn "${remove_table_command} : failed"; exit 1;
-    }
+    warn $remove_table_command if $self->dryrun;
     my $src_dump_file_basename = basename($src_dump_filename);
-    my $load_dump_command = "$self->{'progs'}->{'bq'} load -F '\\t' --max_bad_record=300 $dst gs://${bucket_name}/${src_dump_file_basename} ${bq_schema_json_filename}";
-    my $result_load_dump = system($load_dump_command);
-    if ($result_load_dump != 0) {
-        warn "${load_dump_command} : failed"; exit 1;
+    unless ($self->dryrun) {
+        my $result_remove_table = system($remove_table_command);
+        if ($result_remove_table != 0) {
+            warn "${remove_table_command} : failed"; exit 1;
+        }
+        my $load_dump_command = "$self->{'progs'}->{'bq'} load -F '\\t' --max_bad_record=300 $dst gs://${bucket_name}/${src_dump_file_basename} ${bq_schema_json_filename}";
+        my $result_load_dump = system($load_dump_command);
+        if ($result_load_dump != 0) {
+            warn "${load_dump_command} : failed"; exit 1;
+        }
     }
 
     # remove dump data
     my $dump_rm_command = "$self->{'progs'}->{'gsutil'} rm gs://${bucket_name}/${src_dump_file_basename}";
-    my $result_dump_rm = system($dump_rm_command);
-    if ($result_dump_rm != 0) {
-        warn "${dump_rm_command} : failed"; exit 1;
+    warn $dump_rm_command if $self->dryrun;
+    unless ($self->dryrun) {
+        my $result_dump_rm = system($dump_rm_command);
+        if ($result_dump_rm != 0) {
+            warn "${dump_rm_command} : failed"; exit 1;
+        }
     }
 
     # remove bucket
     my $bucket_rm_command = "$self->{'progs'}->{'gsutil'} rb -f gs://$bucket_name";
-    my $result_bucket_rm = system($bucket_rm_command);
-    if ($result_bucket_rm != 0) {
-        warn "${dump_rm_command} : failed"; exit 1;
+    warn $bucket_rm_command if $self->dryrun;
+    unless ($self->dryrun) {
+        my $result_bucket_rm = system($bucket_rm_command);
+        if ($result_bucket_rm != 0) {
+            warn "${dump_rm_command} : failed"; exit 1;
+        }
     }
 
     print "finish import job!!\n";
