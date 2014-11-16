@@ -1,4 +1,5 @@
 requires 'perl', '5.008001';
+requires 'Time::Piece';
 requires 'Config::CmdRC';
 requires 'DBI';
 requires 'DBD::mysql';
