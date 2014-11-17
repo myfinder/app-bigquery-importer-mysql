@@ -14,20 +14,14 @@ sub new {
     my ($class, $args) = @_;
 
     my @required_list = qw/ src dst mysqlhost mysqluser mysqlpassword project_id progs /;
+    my $obj_data = +{};
     for my $required (@required_list) {
         if( ! defined $args->{$required} ) { croak "$required is required"};
+        $obj_data->{$required} = $args->{$required};
     }
+    $obj_data->{dryrun} = $args->{dryrun},
 
-    bless {
-        dryrun        => $args->{dryrun},
-        src           => $args->{src},
-        dst           => $args->{dst},
-        mysqlhost     => $args->{mysqlhost},
-        mysqluser     => $args->{mysqluser},
-        mysqlpassword => $args->{mysqlpassword},
-        project_id    => $args->{project_id},
-        progs         => $args->{progs},
-    }, $class;
+    bless $obj_data, $class;
 }
 
 sub run {
