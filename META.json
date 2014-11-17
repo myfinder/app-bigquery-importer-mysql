@@ -50,6 +50,7 @@
       },
       "test" : {
          "requires" : {
+            "Test::Fatal" : "0",
             "Test::More" : "0.98"
          }
       }
@@ -66,9 +67,9 @@
          "web" : "https://github.com/myfinder/app-bigquery-importer-mysql"
       }
    },
-   "version" : "0.02",
+   "version" : "0.021",
    "x_authority" : "cpan:MYFINDER",
    "x_contributors" : [
-      "Tatsuro Hisamori <medianetworks@gmail.com>"
+      "Tatasuro Hisamori <medianetworks@gmail.com>"
    ]
 }
