@@ -17,6 +17,15 @@ App::BigQuery::Importer::MySQL is BigQuery data importer from MySQL tables.
     mysql client cli
     gcloud cli
 
+## OPERATION VERIFICATION COMMAND VERSION
+
+    $ mysql --version
+    mysql  Ver 14.14 Distrib 5.5.40, for debian-linux-gnu (x86_64) using readline 6.3
+    $ gsutil version
+    gsutil version: 4.6
+    $ bq version
+    This is BigQuery CLI 2.0.22
+
 # REQUIRED FILES
 
     ~/.my.cnf
