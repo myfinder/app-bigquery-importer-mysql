@@ -6,22 +6,22 @@ use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
 use File::Temp qw(tempfile tempdir);
 use File::Basename;
 use DBI;
+use Carp qw(croak);
 
 our $VERSION = "0.02";
 
 sub new {
-    my $class = shift;
-    my $args  = shift;
-    bless {
-        dryrun        => $args->{dryrun} // undef,
-        src           => $args->{src} // '',
-        dst           => $args->{dst} // '',
-        mysqlhost     => $args->{mysqlhost} // '',
-        mysqluser     => $args->{mysqluser} // '',
-        mysqlpassword => $args->{mysqlpassword} // '',
-        project_id    => $args->{project_id} // '',
-        progs         => $args->{progs} // +{},
-    }, $class;
+    my ($class, $args) = @_;
+
+    my @required_list = qw/ src dst mysqlhost mysqluser mysqlpassword project_id progs /;
+    my $obj_data = +{};
+    for my $required (@required_list) {
+        if( ! defined $args->{$required} ) { croak "$required is required"};
+        $obj_data->{$required} = $args->{$required};
+    }
+    $obj_data->{dryrun} = $args->{dryrun},
+
+    bless $obj_data, $class;
 }
 
 sub run {
