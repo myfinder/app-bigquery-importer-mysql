@@ -10,6 +10,8 @@ App::BigQuery::Importer::MySQL - BigQuery data importer from MySQL tables.
 
 App::BigQuery::Importer::MySQL is BigQuery data importer from MySQL tables.
 
+**THE SOFTWARE IS ALPHA QUALITY. API MAY CHANGE WITHOUT NOTICE.**
+
 # REQUIRED COMMANDS
 
     mysql client cli

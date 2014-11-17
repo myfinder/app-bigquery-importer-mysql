@@ -7,7 +7,7 @@ use File::Temp qw(tempfile tempdir);
 use File::Basename;
 use DBI;
 
-our $VERSION = "0.01_4";
+our $VERSION = "0.02";
 
 sub new {
     my $class = shift;
@@ -138,6 +138,8 @@ App::BigQuery::Importer::MySQL - BigQuery data importer from MySQL tables.
 =head1 DESCRIPTION
 
 App::BigQuery::Importer::MySQL is BigQuery data importer from MySQL tables.
+
+B<THE SOFTWARE IS ALPHA QUALITY. API MAY CHANGE WITHOUT NOTICE.>
 
 =head1 REQUIRED COMMANDS
 
