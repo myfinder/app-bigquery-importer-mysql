@@ -3,7 +3,7 @@ use 5.008001;
 use strict;
 use warnings;
 use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
-use File::Temp qw(tempfile tempdir);
+use File::Temp qw(tempfile);
 use File::Basename;
 use DBI;
 use Carp qw(croak);
