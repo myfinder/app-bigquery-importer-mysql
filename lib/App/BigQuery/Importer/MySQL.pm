@@ -19,7 +19,8 @@ sub new {
         if( ! defined $args->{$required} ) { croak "$required is required"};
         $obj_data->{$required} = $args->{$required};
     }
-    $obj_data->{dryrun} = $args->{dryrun},
+    $obj_data->{dryrun}          = $args->{dryrun},
+    $obj_data->{allow_text_type} = $args->{allow_text_type},
 
     bless $obj_data, $class;
 }
@@ -33,13 +34,15 @@ sub run {
 
     # check the table does not have BLOB or TEXT
     my $dbh = DBI->connect("dbi:mysql:${src_schema}:${db_host}", $self->{'mysqluser'}, $self->{'mysqlpassword'});
-    my $blob_text_check_sql = "SELECT SUM(IF((DATA_TYPE LIKE '%blob%' OR DATA_TYPE LIKE '%text%'),1, 0)) AS cnt
-        FROM INFORMATION_SCHEMA.columns
-        WHERE TABLE_SCHEMA = '${src_schema}' AND TABLE_NAME = '${src_table}'";
-    my $cnt = $dbh->selectrow_hashref($blob_text_check_sql);
-    if ($cnt->{cnt} > 0) {
-        die "${src_schema}.${src_table} has BLOB or TEXT table";
-    }
+
+    $self->_check_columns(
+        +{
+            dbh             => $dbh,
+            src_schema      => $src_schema,
+            src_table       => $src_table,
+            allow_text_type => $self->{'allow_text_type'},
+        }
+    );
 
     # create BigQuery schema json structure
     my $schema_type_check_sql = "SELECT
@@ -119,6 +122,28 @@ sub run {
         if ($result_bucket_rm != 0) {
             die "${dump_rm_command} : failed";
         }
+    }
+}
+
+sub _check_columns {
+    my ($self, $args) = @_;
+
+    my $blob_check_sql = "SELECT SUM(IF((DATA_TYPE LIKE '%blob%'),1, 0)) AS cnt
+        FROM INFORMATION_SCHEMA.columns
+        WHERE TABLE_SCHEMA = '$args->{src_schema}' AND TABLE_NAME = '$args->{src_table}'";
+    my $cnt = $args->{dbh}->selectrow_hashref($blob_check_sql);
+    if ($cnt->{cnt} > 0) {
+        die "$args->{src_schema}.$args->{src_table} has BLOB table";
+    }
+
+    return if $args->{allow_text_type};
+
+    my $text_check_sql = "SELECT SUM(IF((DATA_TYPE LIKE '%text%'),1, 0)) AS cnt
+        FROM INFORMATION_SCHEMA.columns
+        WHERE TABLE_SCHEMA = '$args->{src_schema}' AND TABLE_NAME = '$args->{src_table}'";
+    $cnt = $args->{dbh}->selectrow_hashref($text_check_sql);
+    if ($cnt->{cnt} > 0) {
+        die "$args->{src_schema}.$args->{src_table} has TEXT table";
     }
 }
 

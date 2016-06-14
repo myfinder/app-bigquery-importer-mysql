@@ -24,21 +24,22 @@ defined RC->{'client.password'} or pod2usage(2);
 my %opt;
 GetOptions(
     \%opt,
-    qw(db_host=s src=s dst=s dryrun)
+    qw(db_host=s src=s dst=s allow_text_type dryrun)
 ) or pod2usage(2);
 
 my @required_options = qw(db_host src dst);
 pod2usage(2) if grep {!exists $opt{$_}} @required_options;
 
 my $app = App::BigQuery::Importer::MySQL->new({
-    dryrun        => $opt{dryrun},
-    src           => $opt{src},
-    dst           => $opt{dst},
-    mysqlhost     => $opt{db_host},
-    mysqluser     => RC->{'client.user'},
-    mysqlpassword => RC->{'client.password'},
-    project_id    => RC->{'default.project_id'},
-    progs         => $pathes,
+    dryrun          => $opt{dryrun},
+    src             => $opt{src},
+    dst             => $opt{dst},
+    allow_text_type => $opt{allow_text_type},
+    mysqlhost       => $opt{db_host},
+    mysqluser       => RC->{'client.user'},
+    mysqlpassword   => RC->{'client.password'},
+    project_id      => RC->{'default.project_id'},
+    progs           => $pathes,
 });
 $app->run;
 
@@ -53,10 +54,11 @@ mysqlbq - cli tool for App::BigQuery::Importer::MySQL
     mysqlbq - command description
       Usage: command [options]
       Options:
-        --db_host   MySQL Hostname or IP addr(ex: localhost)
-        --src       MySQL Schema and Table name(ex: schema_name.table_name)
-        --dst       BigQuery Dataset and Table name(ex: dataset_name.table_name)
-        --dryrun    dry run mode. not run the side-effects operation.(ex: gsutil mk/rm, bq load/rm)
+        --db_host         MySQL Hostname or IP addr(ex: localhost)
+        --src             MySQL Schema and Table name(ex: schema_name.table_name)
+        --dst             BigQuery Dataset and Table name(ex: dataset_name.table_name)
+        --allow_text_type Import MySQL TEXT type columns to BigQuery as STRING type
+        --dryrun          dry run mode. not run the side-effects operation.(ex: gsutil mk/rm, bq load/rm)
         -h(--help)  show this help
       Requirement Programs: mysql cli and gcloud package
       Requirement Files: this script needs ~/.my.cnf and ~/.bigqueryrc files

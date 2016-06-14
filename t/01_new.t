@@ -5,13 +5,14 @@ use Test::Fatal;
 use App::BigQuery::Importer::MySQL;
 
 our $origin_args = {
-    src           => 'src.table',
-    dst           => 'dst.table',
-    mysqlhost     => 'localhost',
-    mysqluser     => 'user',
-    mysqlpassword => 'pass',
-    project_id    => 'pjid',
-    progs         => {
+    src             => 'src.table',
+    dst             => 'dst.table',
+    allow_text_type => 0,
+    mysqlhost       => 'localhost',
+    mysqluser       => 'user',
+    mysqlpassword   => 'pass',
+    project_id      => 'pjid',
+    progs           => {
         mysql  => '/path/to/mysql',
         gsutil => '/path/to/gsutil',
         bq     => '/path/to/bq',
