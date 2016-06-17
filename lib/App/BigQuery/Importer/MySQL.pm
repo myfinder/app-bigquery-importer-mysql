@@ -3,7 +3,7 @@ use 5.008001;
 use strict;
 use warnings;
 use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
-use File::Temp qw(tempfile tempdir);
+use File::Temp qw(tempfile);
 use File::Basename;
 use DBI;
 use Carp qw(croak);
@@ -51,7 +51,7 @@ sub run {
         push @schemas, @$row[0];
     }
     my $bq_schema_json = '[' . join(',', @schemas) . ']';
-    my($bq_schema_json_fh, $bq_schema_json_filename) = tempfile;
+    my($bq_schema_json_fh, $bq_schema_json_filename) = tempfile(UNLINK => 1);
     unless ($self->{'dryrun'}) {
         print {$bq_schema_json_fh} $bq_schema_json;
     }
@@ -74,7 +74,7 @@ sub run {
     }
     $dump_result =~ s/\"//g;
     $dump_result =~ s/NULL//g;
-    my($src_dump_fh, $src_dump_filename) = tempfile;
+    my($src_dump_fh, $src_dump_filename) = tempfile(UNLINK => 1);
     unless ($self->{'dryrun'}) {
         print {$src_dump_fh} $dump_result;
     }
