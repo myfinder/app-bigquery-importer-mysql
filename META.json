@@ -67,9 +67,10 @@
          "web" : "https://github.com/myfinder/app-bigquery-importer-mysql"
       }
    },
-   "version" : "0.022",
+   "version" : "0.023",
    "x_authority" : "cpan:MYFINDER",
    "x_contributors" : [
-      "Tatasuro Hisamori <medianetworks@gmail.com>"
+      "Tatasuro Hisamori <medianetworks@gmail.com>",
+      "yoheimuta <yoheimuta@gmail.com>"
    ]
 }

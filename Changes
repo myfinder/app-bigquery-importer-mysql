@@ -2,9 +2,13 @@ Revision history for Perl extension App-BigQuery-Importer-MySQL
 
 {{$NEXT}}
 
-0.022 2016-06-17T01:39:54Z
+0.023 2016-06-17T01:46:08Z
 
     - Fixed: automatically removed a tempfile when the program exits (https://github.com/myfinder/app-bigquery-importer-mysql/pull/3)
+
+0.022 2016-06-17T01:39:54Z
+
+    - Fixed: readme
 
 0.021 2014-11-17T08:45:04Z
 

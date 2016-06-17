@@ -8,7 +8,7 @@ use File::Basename;
 use DBI;
 use Carp qw(croak);
 
-our $VERSION = "0.022";
+our $VERSION = "0.023";
 
 sub new {
     my ($class, $args) = @_;
