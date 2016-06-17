@@ -8,7 +8,7 @@ use File::Basename;
 use DBI;
 use Carp qw(croak);
 
-our $VERSION = "0.021";
+our $VERSION = "0.022";
 
 sub new {
     my ($class, $args) = @_;
@@ -145,6 +145,15 @@ B<THE SOFTWARE IS ALPHA QUALITY. API MAY CHANGE WITHOUT NOTICE.>
 
     mysql client cli
     gcloud cli
+
+=head2 OPERATION VERIFICATION COMMAND VERSION
+
+    $ mysql --version
+    mysql  Ver 14.14 Distrib 5.5.40, for debian-linux-gnu (x86_64) using readline 6.3
+    $ gsutil version
+    gsutil version: 4.6
+    $ bq version
+    This is BigQuery CLI 2.0.22
 
 =head1 REQUIRED FILES
 

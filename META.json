@@ -4,7 +4,7 @@
       "Tatsuro Hisamori <myfinder@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v2.2.0, CPAN::Meta::Converter version 2.142690",
+   "generated_by" : "Minilla/v3.0.1, CPAN::Meta::Converter version 2.150001",
    "license" : [
       "perl_5"
    ],
@@ -67,7 +67,7 @@
          "web" : "https://github.com/myfinder/app-bigquery-importer-mysql"
       }
    },
-   "version" : "0.021",
+   "version" : "0.022",
    "x_authority" : "cpan:MYFINDER",
    "x_contributors" : [
       "Tatasuro Hisamori <medianetworks@gmail.com>"
