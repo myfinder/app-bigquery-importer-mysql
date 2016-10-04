@@ -2,6 +2,9 @@ Revision history for Perl extension App-BigQuery-Importer-MySQL
 
 {{$NEXT}}
 
+0.024 2016-10-04T08:05:20Z
+    - add allow_text_type option (https://github.com/myfinder/app-bigquery-importer-mysql/pull/4)
+
 0.023 2016-06-17T01:46:08Z
 
     - Fixed: automatically removed a tempfile when the program exits (https://github.com/myfinder/app-bigquery-importer-mysql/pull/3)
